@@ -100,7 +100,7 @@ $(function(){
 	
 	// This rejects results for Candyland, which Twitter thinks is Cookeville, TN.
 	function fixCookevilleResults(results) {
-		return _.reject(results, function(result) { return result.location.match(/[kc]and(y|ee|i)land/i); });
+		return _.reject(results, function(result) { return result.location == undefined ? false : result.location.match(/[kc]and(y|ee|i)land/i); });
 	}
 	
 	// For representing the distance as a string (if over 500mi, infinity)
