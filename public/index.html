@@ -1,0 +1,38 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<head>
+	<meta charset="UTF-8">
+	<title>CircaTweet – Location-based Twitter searching</title>
+	<meta name="author" content="Jason T Johnson">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="/css/all.css">
+</head>
+<body>
+	<div id="container">
+		<header>
+			<ol>
+				<li><input type="search" name="q" value="" autofocus placeholder="Twitter Search"></li>
+				<li>
+					<p class="slider"><input type="range" name="dist" value="100" min="0" max="510" step="10" style="display:none;"></p>
+				</li>
+			</ol>
+		</header>
+		<div id="main" role="main">
+			<div id="status"></div>
+			<div id="spinner"><img src="img/spinner.gif" alt="Spinner"></div>
+			<div id="results">
+			</div>
+		</div>
+		<footer>
+			<p>A SynthMod experiment. © 2011 Jason T Johnson</p>
+		</footer>
+	</div>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js"></script>
+	<script>!window.jQuery && document.write(unescape('%3Cscript src="/js/jquery-1.6.min.js"%3E%3C/script%3E'))</script>
+	<script src="js/script.js"></script>
+</body>
+</html>

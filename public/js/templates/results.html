@@ -1,0 +1,23 @@
+{{#if results}}
+<ul>
+	{{#each results}}
+		<li class="tweet cf">
+				<time>{{relDate created_at}}</time>
+				<a href="http://twitter.com/{{from_user}}"><img height="48" width="48" src="{{profile_image_url}}"></a>
+				<h1><a href="http://twitter.com/{{from_user}}">{{from_user}}</a></h1>
+				<p>{{parseTweet text}}</p>
+				{{#if location}}
+					<small>{{location}}</small>
+				{{/if}}
+			</div>
+		</li>
+	{{/each}}
+</ul>
+{{else}}
+<p class="no-results">
+	Nothing found.
+	{{#if use_dist}}
+		Try increasing your search radius.
+	{{/if}}
+</p>
+{{/if}}
