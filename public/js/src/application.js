@@ -2,8 +2,6 @@ $(function(){
 
 	// delayer is a timeout that keeps down the number of requests to Twitter
 	var delayer;
-	// use_dist keeps track of whether or not we are geolocated
-	var use_dist = false;
 
 	// Handlebars.js templates
 	var resultsTemplate;
@@ -15,23 +13,8 @@ $(function(){
 		statusTemplate = Handlebars.compile(template);
 	});
 	
-	// Geolocation!
-	if (Modernizr.geolocation) {
-		var latitude, longitude;
-		navigator.geolocation.getCurrentPosition(
-			function(position) {
-				latitude = position.coords.latitude;
-				longitude = position.coords.longitude;
-				// Show the distance slider
-				$('input[name="dist"]').show();
-				use_dist = true;
-			}
-		);
-	}
-	
 	// Bind events for inputs
 	$('input[name="q"]').keyup(delayedSearch);
-	$('input[name="dist"]').change(delayedSearch);
 	
 	// This allows for clickable hashtags
 	$('.hashtag').live('click', function() {
@@ -41,7 +24,7 @@ $(function(){
 	
 	// Updates the status message (see /hs/templates/status.html)
 	function updateStatus() {
-		$('#status').html($(statusTemplate(status())));
+		$('#status').html($(statusTemplate({q: inputVal('q')})));
 	}
 	
 	// Delays the API call until typing or sliding stops for 1/2 second
@@ -62,50 +45,26 @@ $(function(){
 	// API call to Twitter
 	function doSearch() {
 		// Get the input values
-		var current_status = status();
+		var q = inputVal('q');
 		
 		// Don't do anything if the search string is short
-		if(current_status.q.length < 2) return;
+		if(q.length < 2) return;
 		
 		// Set up params to send to Twitter
 		var params = {};
 		params.lang = 'en';
-		params.q = current_status.q;
-		if(current_status.dist) params.geocode = [ latitude, longitude, current_status.dist + 'mi' ].join(',');
+		params.q = q;
 		
 		// JSON request
 		$.getJSON(
 			'http://search.twitter.com/search.json?callback=?', 
 			params, 
 			function(data) { 
-				data.results = fixCookevilleResults(data.results);
 				$('#spinner').hide();
-				// Add this to the data so the templates can use it:
-				data.use_dist = use_dist;
 				// Render Handlebars.js template and insert
 				$('#results').html($(resultsTemplate(data))); 
 			}
 		);
-	}
-	
-	// Gets values from inputs and returns an object
-	function status() {
-		var dist = inputVal('dist');
-		var dist = (use_dist && parseFloat(dist) < 500) ? dist : false;
-		return {
-			dist: dist, 
-			q: inputVal('q'),
-		}
-	}
-	
-	// This rejects results for Candyland, which Twitter thinks is Cookeville, TN.
-	function fixCookevilleResults(results) {
-		return _.reject(results, function(result) { return result.location == undefined ? false : result.location.match(/[kc]and(y|ee|i)land/i); });
-	}
-	
-	// For representing the distance as a string (if over 500mi, infinity)
-	function distanceString(dist) {
-		return parseFloat(dist) > 500 ? '∞' : dist;
 	}
 	
 	// A utility method for fetching input values
@@ -136,8 +95,6 @@ $(function(){
 	}
 	
 	// Begin Handlebars Helpers -----------------------------------
-
-	Handlebars.registerHelper('distanceString', distanceString);
 
 	Handlebars.registerHelper('parseTweet', function(tweet) {
 		return new Handlebars.SafeString(autoUsernames(autoHashtags(autoLinks(Handlebars.Utils.escapeExpression(tweet)))));
